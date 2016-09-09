@@ -128,6 +128,11 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       rtm.sendMessage(msg, message.channel);
     }
 
+    if (args[0] == null) {
+      reply("What?");
+      return;
+    }
+
     // generate mid 500 "I AM WORDS"
     if (args[0] === "gen" || args[0] === "generate") {
       generate(args[1], args[2], args[3], replyErr, reply);
