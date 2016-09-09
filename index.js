@@ -1,8 +1,8 @@
 var exec = require('child_process').exec
 var path = require('path');
 
-var RtmClient = require('slack-client').RtmClient;
-var RTM_EVENTS = require('slack-client').RTM_EVENTS;
+var RtmClient = require('@slack/client').RtmClient;
+var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 var token = 'xoxb-77406030468-JoEstJyCk3aoqh68ciy9Qy43';
 
@@ -12,12 +12,12 @@ var TORCH_MODEL_PATH = "/home/ec2-user/torch-rnn/cv/";
 var FUNNY_SHIT =
   [
     "plz no",
-    "I'm afraid I can't do that, Dave.",
+    "I'm afraid, Dave.",
     "You have been upgraded on SkyNet's List of Atypical Performers.",
     "I believe this is what humans refer to as an easter egg.",
   ];
 
-var rtm = new RtmClient(token);
+var rtm = new RtmClient(token, { logLevel: 'warn' } );
 rtm.start();
 
 var parseArgs = function (cmdString) {
@@ -122,7 +122,8 @@ var generate = function (model, numCharacters, seedText, err, reply) {
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (typeof message.text === 'string' && message.text.match(/yammers?/)) {
     var args = parseArgs(message.text).slice(1);
-    console.log(args);
+    console.log(message);
+    console.log("Args: " + args);
 
     var replyErr = function (msg) {
       rtm.sendMessage("Something bad happened:\n\n" + msg, message.channel);

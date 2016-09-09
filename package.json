@@ -9,7 +9,7 @@
   "author": "Kirby Banman",
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.9.0",
-    "slack-client": "~2.0.6"
+    "@slack/client": "^3.6.0",
+    "commander": "^2.9.0"
   }
 }
