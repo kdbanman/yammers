@@ -120,7 +120,7 @@ var generate = function (model, numCharacters, seedText, err, reply) {
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
-  if (typeof message.text === 'string' && message.text.match(/yammers? /)) {
+  if (typeof message.text === 'string' && message.text.match(/yammers?/)) {
     var args = parseArgs(message.text).slice(1);
     console.log(args);
 
