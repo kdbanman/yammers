@@ -84,7 +84,15 @@ var generate = function (model, numCharacters, seedText, err, reply) {
     return;
   }
 
-  reply("Working...")
+  var spinnerTask;
+  reply("Working... :clock1:", function (msg) {
+    var spinnerTime = 0;
+    spinnerTask = setInterval(function () {
+      spinnerTime = (spinnerTime % 12) + 1;
+      msg.text = "Working... :clock" + spinnerTime + ":"
+      rtm.updateMessage(msg);
+    }, 500);
+  });
 
   var modelPath = path.join(TORCH_MODEL_PATH, "txt-surround_3L_512N/" + model + ".t7");
 
@@ -125,8 +133,15 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     var replyErr = function (msg) {
       rtm.sendMessage("Something bad happened:\n\n" + msg, message.channel);
     }
-    var reply = function (msg) {
-      rtm.sendMessage(msg, message.channel);
+    var reply = function (msg, callback) {
+      rtm.sendMessage(msg, message.channel, function (err) {
+        if (err) {
+          console.log("Error sending message: " + err);
+          return;
+        }
+        
+        callback(msg);
+      });
     }
 
     if (args[0] == null) {
