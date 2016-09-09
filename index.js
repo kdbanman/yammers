@@ -81,6 +81,34 @@ var generate = function (model, numCharacters, seedText, err, reply) {
   }
 
   reply("Working...")
+
+  var generateCommand =
+    "th sample.lua -checkpoint cv/txt-surround_3L_512N/" +
+    model + ".t7 -length " +
+    numCharacters + " -gpu -1 -start_text \"" +
+    seedText + "\"";
+
+  exec(generateCommand, function (execError, stdout, stderr) {
+    if (execError) {
+      var errMsg =
+        "Command\n" +
+        "  $ " + generateCommand + "\n" +
+        "failed with:\n\n" + execError;
+      err(backtickWrap(errMsg));
+      return;
+    }
+
+    if (stderr) {
+      var errMsg =
+        "Command\n" +
+        "  $ " + generateCommand + "\n" +
+        "reported:\n\n" + stderr;
+      err(backtickWrap(errMsg));
+      return;
+    }
+
+    reply(backtickWrap(stdout));
+  });
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
