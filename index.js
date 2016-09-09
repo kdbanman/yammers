@@ -114,7 +114,8 @@ var generate = function (model, numCharacters, seedText, err, reply) {
       return;
     }
 
-    reply(backtickWrap(stdout));
+    // Deal with meta key escape sequence given by torch-rnn.
+    reply(backtickWrap(stdout.slice(8)));
   });
 };
 
