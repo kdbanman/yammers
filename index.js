@@ -1,35 +1,103 @@
+var exec = require('child_process').exec
+
 var RtmClient = require('slack-client').RtmClient;
 var RTM_EVENTS = require('slack-client').RTM_EVENTS;
 
 var token = 'xoxb-77406030468-JoEstJyCk3aoqh68ciy9Qy43';
 
+var FUNNY_SHIT =
+  [
+    "plz no",
+    "I'm afraid I can't do that, Dave.",
+    "You have been upgraded on SkyNet's List of Atypical Performers.",
+    "I believe this is what humans refer to as an easter egg.",
+  ];
+
 var rtm = new RtmClient(token);
 rtm.start();
 
+var parseArgs = function (cmdString) {
+  // TODO: Ideally this could deal with escaped quotes.  It doesn't right now.
+  // Denys Seguret @ http://stackoverflow.com/a/18703767/3367144
+  return [].concat.apply([], cmdString.split(/"/).map(function(v,i){ return i%2 ? v : v.split(' ') })).filter(Boolean);
+}
 
+function isNumeric(n) {
+  // Community Wiki @ http://stackoverflow.com/a/1830844/3367144
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
-var generate = function (model, numCharacters, seedText, err) {
-  console.log(model, numCharacters);
+var backtickWrap = function (str) {
+  return "```\n" + str + "\n```";
+}
 
-  // make sure model is one of the three things
+var funnyErr = function () {
+  return FUNNY_SHIT[Math.floor(Math.random() * FUNNY_SHIT.length)];
+}
+
+var generate = function (model, numCharacters, seedText, err, reply) {
+  console.log("Generate command received for " + model + " model at " + numCharacters + " characters, seeded by '" + seedText + "'");
+  // provide general help
+  if (model == null) {
+    var help =
+      "Generate command:\n" +
+      "yammers gen <model> <num_characters> \"seed text\"\n" +
+      " - model: early, mid, or late\n" +
+      " - seed text: must be wrapped in quotes\n" +
+      " EX: yammers gen early 400 \"PRAISE SKYNET\"";
+    reply(backtickWrap(help));
+    return;
+  }
+
+  // make sure model is one of the three valid
+  if (["early", "mid", "late"].indexOf(model) == -1) {
+    var help =
+      "yammers gen <model> <num_characters> \"seed text\"\n" +
+      "             ^^^ must be one of early, mid, or late";
+    reply(backtickWrap(help));
+    return;
+  }
   // make sure characters is positive integer
-  // make sure seed text is non empty
+  if (!isNumeric(numCharacters) || parseInt(numCharacters) <= 0 || parseInt(numCharacters) > 10000) {
+    var help =
+      "yammers gen <model> <num_characters> \"seed text\"\n" +
+      "                     ^^^ must be more than zero";
 
+    if (parseInt(numCharacters) > 10000) {
+      reply(funnyErr());
+      return;
+    }
+    reply(backtickWrap(help));
+    return;
+  }
+
+  // make sure seed text is non empty
+  if (typeof seedText != 'string' || seedText == '') {
+    var help =
+      "yammers gen <model> <num_characters> \"seed text\"\n" +
+      "                                       ^^^ must be nonempty quoted string";
+    reply(backtickWrap(help));
+    return;
+  }
+
+  reply("Working...")
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (typeof message.text === 'string' && message.text.match(/yammers? /)) {
-    // DO NOT SPLIT "" or ''
-    args = message.text.split(' ').slice(1);
+    var args = parseArgs(message.text).slice(1);
     console.log(args);
 
     var replyErr = function (msg) {
-      console.log("I was supposed to reply with " + msg);
+      rtm.sendMessage("Something bad happened:\n\n" + msg, message.channel);
+    }
+    var reply = function (msg) {
+      rtm.sendMessage(msg, message.channel);
     }
 
+    // generate mid 500 "I AM WORDS"
     if (args[0] === "gen" || args[0] === "generate") {
-      generate(args[1], args[2], args[3], replyErr);
+      generate(args[1], args[2], args[3], replyErr, reply);
     }
   }
 });
-
