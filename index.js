@@ -1,9 +1,12 @@
 var exec = require('child_process').exec
+var path = require('path');
 
 var RtmClient = require('slack-client').RtmClient;
 var RTM_EVENTS = require('slack-client').RTM_EVENTS;
 
 var token = 'xoxb-77406030468-JoEstJyCk3aoqh68ciy9Qy43';
+
+var TORCH_MODEL_PATH = "/home/ec2-user/torch-rnn/cv/";
 
 var FUNNY_SHIT =
   [
@@ -82,9 +85,11 @@ var generate = function (model, numCharacters, seedText, err, reply) {
 
   reply("Working...")
 
+  var modelPath = path.join(TORCH_MODEL_PATH, "txt-surround_3L_512N/" + model + ".t7");
+
   var generateCommand =
-    "th sample.lua -checkpoint cv/txt-surround_3L_512N/" +
-    model + ".t7 -length " +
+    "th sample.lua -checkpoint " +
+    modelPath + " -length " +
     numCharacters + " -gpu -1 -start_text \"" +
     seedText + "\"";
 
