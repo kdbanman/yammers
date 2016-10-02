@@ -1,10 +1,11 @@
-var exec = require('child_process').exec
+var process = require('process');
+var exec = require('child_process').exec;
 var path = require('path');
 
 var RtmClient = require('@slack/client').RtmClient;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
-var token = 'xoxb-77406030468-JoEstJyCk3aoqh68ciy9Qy43';
+var token = process.env.SLACK_TOKEN;
 
 var TORCH_RNN_PATH = "/home/ec2-user/torch-rnn/"
 var TORCH_MODEL_PATH = "/home/ec2-user/torch-rnn/cv/";
