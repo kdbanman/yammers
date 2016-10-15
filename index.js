@@ -40,6 +40,41 @@ var funnyErr = function () {
   return FUNNY_SHIT[Math.floor(Math.random() * FUNNY_SHIT.length)];
 }
 
+var MODELS = [
+  {
+    name: "early",
+    tags: undefined,
+    path: "txt-surround_3L_512N/early.t7",
+  },
+  {
+    name: "mid",
+    tags: undefined,
+    path: "txt-surround_3L_512N/mid.t7",
+  },
+  {
+    name: "late",
+    tags: undefined,
+    path: "txt-surround_3L_512N/late.t7",
+  },
+  {
+    name: "early-simple",
+    tags: undefined,
+    path: "txt-surround_2L_128N/early-simple.t7",
+  },
+  {
+    name: "mid-simple",
+    tags: undefined,
+    path: "txt-surround_2L_128N/mid-simple.t7",
+  },
+  {
+    name: "late-simple",
+    tags: undefined,
+    path: "txt-surround_2L_128N/late-simple.t7",
+  },
+];
+
+var MODEL_NAMES = MODELS.map(function (model) { return model.name; });
+
 var generate = function (model, numCharacters, seedText, err, reply) {
   console.log("Generate command received for " + model + " model at " + numCharacters + " characters, seeded by '" + seedText + "'");
   // provide general help
@@ -47,18 +82,18 @@ var generate = function (model, numCharacters, seedText, err, reply) {
     var help =
       "Generate command:\n" +
       "yammers gen <model> <num_characters> \"seed text\"\n" +
-      " - model: early, mid, or late\n" +
-      " - seed text: must be wrapped in quotes\n" +
+      " - model: " + MODEL_NAMES.join(", ") + "\n" +
+      " - seed text: must be wrapped in quotes (turn off smart quotes mac users)\n" +
       " EX: yammers gen early 400 \"PRAISE SKYNET\"";
     reply(backtickWrap(help));
     return;
   }
 
   // make sure model is one of the three valid
-  if (["early", "mid", "late"].indexOf(model) == -1) {
+  if (MODEL_NAMES.indexOf(model) == -1) {
     var help =
       "yammers gen <model> <num_characters> \"seed text\"\n" +
-      "             ^^^ must be one of early, mid, or late";
+      "             ^^^ must be one of " + MODEL_NAMES.join(", ");
     reply(backtickWrap(help));
     return;
   }
@@ -87,7 +122,7 @@ var generate = function (model, numCharacters, seedText, err, reply) {
 
   reply("Working...")
 
-  var modelPath = path.join(TORCH_MODEL_PATH, "txt-surround_3L_512N/" + model + ".t7");
+  var modelPath = path.join(TORCH_MODEL_PATH, MODELS[model].path);
 
   var generateCommand =
     "cd " + TORCH_RNN_PATH + ";" +
