@@ -40,40 +40,34 @@ var funnyErr = function () {
   return FUNNY_SHIT[Math.floor(Math.random() * FUNNY_SHIT.length)];
 }
 
-var MODELS = [
-  {
-    name: "early",
+var MODELS = {
+  "early": {
     tags: undefined,
     path: "txt-surround_3L_512N/early.t7",
   },
-  {
-    name: "mid",
+  "mid": {
     tags: undefined,
     path: "txt-surround_3L_512N/mid.t7",
   },
-  {
-    name: "late",
+  "late": {
     tags: undefined,
     path: "txt-surround_3L_512N/late.t7",
   },
-  {
-    name: "early-simple",
+  "early-simple": {
     tags: undefined,
     path: "txt-surround_2L_128N/early-simple.t7",
   },
-  {
-    name: "mid-simple",
+  "mid-simple": {
     tags: undefined,
     path: "txt-surround_2L_128N/mid-simple.t7",
   },
-  {
-    name: "late-simple",
+  "late-simple": {
     tags: undefined,
     path: "txt-surround_2L_128N/late-simple.t7",
   },
-];
+};
 
-var MODEL_NAMES = MODELS.map(function (model) { return model.name; });
+var MODEL_NAMES = Object.keys(MODELS);
 
 var generate = function (model, numCharacters, seedText, err, reply) {
   console.log("Generate command received for " + model + " model at " + numCharacters + " characters, seeded by '" + seedText + "'");
