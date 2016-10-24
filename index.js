@@ -53,6 +53,11 @@ var MODELS = {
     tags: undefined,
     path: "txt-surround_3L_512N/late.t7",
   },
+
+  "simple": {
+    tags: undefined,
+    path: "txt-surround_2L_128N/mid-simple.t7",
+  },
   "early-simple": {
     tags: undefined,
     path: "txt-surround_2L_128N/early-simple.t7",
@@ -64,6 +69,23 @@ var MODELS = {
   "late-simple": {
     tags: undefined,
     path: "txt-surround_2L_128N/late-simple.t7",
+  },
+  
+  "big": {
+    tags: undefined,
+    path: "txt-surround_3L_1024N/mid-big.t7",
+  },
+  "early-big": {
+    tags: undefined,
+    path: "txt-surround_3L_1024N/early-big.t7",
+  },
+  "mid-big": {
+    tags: undefined,
+    path: "txt-surround_3L_1024N/mid-big.t7",
+  },
+  "late-big": {
+    tags: undefined,
+    path: "txt-surround_3L_1024N/late-big.t7",
   },
 };
 
